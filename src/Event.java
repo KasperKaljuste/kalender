@@ -47,12 +47,7 @@ public class Event implements Comparable<Event>{
 
     @Override
     public String toString() { //Seda võiks sobivamaks muuta
-        return "Event{" +
-                "nimi='" + nimi + '\'' +
-                ", kuupäev='" + kuupäev + '\'' +
-                ", aeg='" + aeg + '\'' +
-                ", detailid=" + detailid +
-                '}';
+        return "" + nimi + ", " + kuupäev + ", " + aeg + ", " + detailid + "\n";
     }
     public void lisaDetail(String detail){
         detailid.add(detail);
