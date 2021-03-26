@@ -1,3 +1,4 @@
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,6 +36,15 @@ public class Kalender {
         //meeldetuletuse sõnumi.
 
 
+        System.out.println("KALENDER");
+        System.out.println("Autorid: Kasper Kaljuste ja Karl-Magnus Laikoja");
+        System.out.println("Juhised:");
+        System.out.println("Praeguse kuupäeva väljastamiseks sisestage \"kuupäev\"");
+        System.out.println("Praeguse kellaaja väljastamiseks sisestage \"kell\"");
+        System.out.println("Sündmuse lisamise alustamiseks sisestage \"lisa\"");
+
+        //Veel edasi juhised kõige muu jaoks: väljasta evendid, kindla evendi info jne jne
+
         while (true) {
             if (state.equals("") || state.equals("kuupäev")) {
                 System.out.print("\r" + kuupäev.getTäna());
@@ -49,6 +59,8 @@ public class Kalender {
                 System.out.println("Valisite: " + state);
             }
             else if (state.equals("lisa")) { //Saab lisada evendi hetkel ainult ühe detailiga
+                //Tegin detaili sisestamise optionaliks ning võimalik mitu sisestada.
+                //Mis kujul peab kasutaja vastuseid andma?
                 System.out.println();
                 System.out.println("Sisesta ürituse nimi: ");
                 String nimi = scanner.nextLine();
@@ -56,14 +68,38 @@ public class Kalender {
                 String päev = scanner.nextLine();
                 System.out.println("Sisesta aeg: ");
                 String aeg = scanner.nextLine();
-                System.out.println("Sisesta detailid: ");
-                String detail = scanner.nextLine();
-                Event uus = new Event(nimi, päev, aeg, Arrays.asList(detail)) {
-                    @Override
-                    public void meeldetuletus(String päev, String aeg) {
+                System.out.println("Kas soovite lisada detaile (jah/ei)?: ");
+                String vastus = scanner.nextLine();
+                ArrayList<String> detailidelist = new ArrayList<String>();
+                Event uus = new Event(nimi, päev, aeg, detailidelist);
+                LocalTime meeldetuletuseAeg = LocalTime.parse("00:00:00.000000000");
+                Meeldetuletus uus2 = new Meeldetuletus(nimi, päev, aeg, detailidelist, meeldetuletuseAeg);
+                if(vastus.equals("jah")){
+                    boolean tingimus = true;
+                    System.out.println("Sisestage ükshaaval detaile. Kui rohkem pole vaja lisada, kirjutage \"lõpeta\"");
+                    while(tingimus==true){
+                        String detailvastus = scanner.nextLine();
+                        if(detailvastus.equals("lõpeta")){
+                            tingimus = false;
+                            break;
+                        }
+                        else{ //Siin on midagi valesti, ta lisab 2x detaili ühele evendile.
+                            uus.lisaDetail(detailvastus);
+                            uus2.lisaDetail(detailvastus);
+                        }
                     }
-                };
-                evendid.add(uus);
+                }
+                System.out.println("Kas soovite lisada meeldetuletuse (jah/ei) ?: "); //Seda võiks võimalusel nii muuta, et saab panna mitu meeldetuletust
+                String meeldetuletusjahei = scanner.nextLine();
+                if(meeldetuletusjahei.equals("ei")) {
+                    evendid.add(uus);
+                }
+                else{
+                    System.out.println("Sisestage meeldetuletus formaadis tund:minut:sekund.millisekund (näiteks 13:04:30.000): ");
+                    String meeldetuletusvastus = scanner.nextLine();
+                    uus2.setMeeldetuletuseAeg(LocalTime.parse(meeldetuletusvastus));
+                    evendid.add(uus2);
+                }
                 System.out.println(evendid);
                 state = ""; //Esialgsesse state tagasi
             }

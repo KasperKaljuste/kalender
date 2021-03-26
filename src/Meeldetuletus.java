@@ -1,16 +1,21 @@
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Meeldetuletus extends Event{ //abstrakt sest meeldetuletus ei pea implementeerima Comparable
+public class Meeldetuletus extends Event{ //abstrakt sest meeldetuletus ei pea implementeerima Comparable
     //Kalendri klassis loo meeldetuletuse objekt ja õigel hetkel väljastab toString meetodi.
     private LocalTime meeldetuletuseAeg;
 
-    public Meeldetuletus(String nimi, String kuupäev, String aeg, List<String> detailid, LocalTime meeldetuletuseAeg) {
+    public Meeldetuletus(String nimi, String kuupäev, String aeg, ArrayList<String> detailid, LocalTime meeldetuletuseAeg) {
         super(nimi, kuupäev, aeg, detailid);
         this.meeldetuletuseAeg = meeldetuletuseAeg;
     }
 
-    @Override
+    public void setMeeldetuletuseAeg(LocalTime meeldetuletuseAeg) {
+        this.meeldetuletuseAeg = meeldetuletuseAeg;
+    }
+
+    //@Override
     public void meeldetuletus(String kuupäev, String aeg){
         //
     }

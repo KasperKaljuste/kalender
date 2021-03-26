@@ -1,18 +1,20 @@
+import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Event implements Comparable<Event>{
+public class Event implements Comparable<Event>{
     //kuupäev ja aeg eraldi
     private String nimi;
     private String kuupäev;
     private String aeg;
-    private List<String> detailid; //nt kontserdi ürituse all {"pileti hind 2 eurot", "võta jope kaasa"}
+    private ArrayList<String> detailid; //nt kontserdi ürituse all {"pileti hind 2 eurot", "võta jope kaasa"}
 
-    public Event(String nimi, String kuupäev, String aeg, List<String> detailid) {
+    public Event(String nimi, String kuupäev, String aeg, ArrayList<String> detailid) {
         this.nimi = nimi;
         this.kuupäev = kuupäev;
         this.aeg = aeg;
         this.detailid = detailid;
     }
+
 
     public String getNimi() {
         return nimi;
@@ -153,7 +155,7 @@ public abstract class Event implements Comparable<Event>{
 
     }
 
-    public abstract void meeldetuletus(String kuupäev, String aeg);
+    //public abstract void meeldetuletus(String kuupäev, String aeg);
 
     //if aeg kujul "17:00" siis konstruktor ajaga lihtsalt 17:00
     //if lõpuaeg == alguseaeg , siis see mis üleval
