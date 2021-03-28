@@ -2,14 +2,32 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+
 
 public class Kalender {
-    public static void main(String[] args) {
+    /*boolean isNowBetweenDateTime(final Date s, final Date e)
+    {
+        final Date now = new Date();
+        return now.after(s) && now.before(e);
+    }
+
+    public static void meeldetuletusjooksvalt() throws Exception{
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        Date tuletameelde = formatter.parse("2021-03-28 at 15:08:00");
+        while(true){
+            Date praeguneAeg = new Date(System.currentTimeMillis());
+            if (formatter.format(praeguneAeg).equals(tuletameelde))
+                System.out.println("MEELDETULETUS!");
+        }
+    }*/
+    public static void main(String[] args) throws Exception{
+        
+
         Kell kell = new Kell();
         Kuupäev kuupäev = new Kuupäev();
         String state = new String();
@@ -39,6 +57,53 @@ public class Kalender {
             System.out.println("Error faili tegemisel");
             e.printStackTrace();
         }
+
+
+
+        //Thread t1 = new Thread(){
+            //public void run(){
+                //try {
+                /*for (Event event : evendid) {
+                   if(event instanceof Meeldetuletus){ //Kui event on Meeldetuletus objekt, siis tal on meeldetuletuse aeg
+                       Timer timer = new Timer();
+                       Date aeg = ((Meeldetuletus) event).getMeeldetuletuseAeg();
+                       timer.schedule(new TimerTask() {
+                           public void run() {
+                               System.out.println("MEELDETULETUS!");
+                               cancel();
+                           }
+                       },new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss").parse("2021-03-28 at 16:13:00"));
+                   }
+                }*/
+                    //SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss");
+                    //Date tuletameelde = formatter.parse("2021-03-28 at 16:00:00");
+                    //Timer timer = new Timer();
+                    //while (true) {
+                        /*//Date praeguneAeg = new Date(System.currentTimeMillis());
+                        Calendar praeguneAeg = Calendar.getInstance();
+                        praeguneAeg.set(Calendar.MILLISECOND, 0);
+                        //if (formatter.format(praeguneAeg).equals(tuletameelde.toString())) {
+                        if(praeguneAeg.equals(tuletameelde)){
+                            System.out.println("MEELDETULETUS!");
+                        }*/
+                    /*timer.schedule(new TimerTask() {
+                        public void run() {
+                            System.out.println("MEELDETULETUS!");
+                            cancel();
+                        }
+                    },new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss").parse("2021-03-28 at 16:13:00"));*/
+                    //}
+                //}
+                //catch(ParseException e){
+                    //System.out.println("Error");
+                //}
+            //}
+        //};
+        //t1.start();
+        
+        
+        
+        
         //Väljastab evendid järjestatult compareTo
         //List<Event>
         //for each event kalendrist
@@ -67,10 +132,30 @@ public class Kalender {
         System.out.println("Praeguse kuupäeva väljastamiseks sisestage \"kuupäev\"");
         System.out.println("Praeguse kellaaja väljastamiseks sisestage \"kell\"");
         System.out.println("Sündmuse lisamise alustamiseks sisestage \"lisa\"");
+        System.out.println("Sündmuste salvestamiseks sisestage \"salvesta\"");
+        System.out.println("Sündmuste väljastamiseks sisestage \"väljasta\"");
 
         //Veel edasi juhised kõige muu jaoks: väljasta evendid, kindla evendi info jne jne
 
+
+
         while (true) {
+
+            for (Event event : evendid) {
+                if(event instanceof Meeldetuletus){ //Kui event on Meeldetuletus objekt, siis tal on meeldetuletuse aeg
+                    Timer timer = new Timer();
+                    Date aeg = ((Meeldetuletus) event).getMeeldetuletuseAeg();
+                    timer.schedule(new TimerTask() {
+                        public void run() {
+                            System.out.println("MEELDETULETUS! "+ event.toString());
+                            cancel();
+                        }
+                    },aeg);
+                }
+            }
+
+
+
             if (state.equals("") || state.equals("kuupäev")) {
                 System.out.print("\r" + kuupäev.getTäna());
                 System.out.println();
@@ -112,7 +197,10 @@ public class Kalender {
                 String vastus = scanner.nextLine();
                 ArrayList<String> detailidelist = new ArrayList<String>();
                 Event uus = new Event(nimi, päev, aeg, detailidelist);
-                LocalTime meeldetuletuseAeg = LocalTime.parse("00:00:00.000000000");
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss");
+                //DateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
+                Date meeldetuletuseAeg = format.parse("0000-01-01 at 00:00:00");
+                //Date meeldetuletuseKuupäev = format2.parse("2000-01-01");
                 Meeldetuletus uus2 = new Meeldetuletus(nimi, päev, aeg, detailidelist, meeldetuletuseAeg);
                 if(vastus.equals("jah")){
                     boolean tingimus = true;
@@ -124,7 +212,7 @@ public class Kalender {
                             break;
                         }
                         else{ //Siin on midagi valesti, ta lisab 2x detaili ühele evendile. Vist korras
-                            //uus.lisaDetail(detailvastus);
+                            uus.lisaDetail(detailvastus);
                             uus2.lisaDetail(detailvastus);
                         }
                     }
@@ -134,14 +222,22 @@ public class Kalender {
                 if(meeldetuletusjahei.equals("ei")) {
                     evendid.add(uus);
                 }
-                else{
-                    System.out.println("Sisestage meeldetuletus formaadis tund:minut:sekund.millisekund (näiteks 13:04:30.000): ");
-                    String meeldetuletusvastus = scanner.nextLine();
-                    uus2.setMeeldetuletuseAeg(LocalTime.parse(meeldetuletusvastus));
+                else if(meeldetuletusjahei.equals("jah")){
+                    System.out.println("Sisestage meeldetuletuse aeg formaadis aasta-kuu-päev at tund:minut:sekund (näiteks 2021-12-01 at 12:00:00): ");
+                    String meeldetuletusaegvastus = scanner.nextLine();
+                    Date meeldetuletusaeg = format.parse(meeldetuletusaegvastus);
+                    uus2.setMeeldetuletuseAeg(meeldetuletusaeg);
                     evendid.add(uus2);
+                }
+                else{
+                    System.out.println("Vigane sisestus.");
                 }
                 System.out.println(evendid);
                 state = ""; //Esialgsesse state tagasi
+            }
+            else if (state.equals("väljasta")) {
+                System.out.println(evendid);
+                state = "";
             }
             else{
                 state = ""; //Kui kirjutatakse mingi suvaline käsklus siis läheb ka esialgsesse state tagasi

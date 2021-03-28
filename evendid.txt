@@ -1,2 +1,4 @@
-sunkar, 11.12.2022, 14.22, []
-aa, 11.12.2021, 17.08, [tere, appi]
+bla, kuupäev: kuupäev: kuupäev: 28.03.2021, aeg: aeg: aeg: 16:00, detailid: [detailid: detailid: ]
+blabla, kuupäev: kuupäev: kuupäev: 29.03.2021, aeg: aeg: aeg: 17:00, detailid: [detailid: detailid: uuu]
+kontsert, kuupäev: kuupäev: 28.03.2021, aeg: aeg: 16:45, detailid: [detailid: võta jope kaasa]
+a, kuupäev: b, aeg: c, detailid: [], meeldetuletus: Sun Mar 28 16:50:00 EEST 2021
