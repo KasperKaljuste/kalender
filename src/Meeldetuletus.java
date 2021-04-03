@@ -22,13 +22,13 @@ public class Meeldetuletus extends Event{ //abstrakt sest meeldetuletus ei pea i
 
     @Override
     public String toString() {
-        return "" + getNimi() + ", kuupäev: " + getKuupäev() + ", aeg: " + getAeg() + ", detailid: " + getDetailid() +", meeldetuletus: "+meeldetuletuseAeg+"\n";
+        return "" + getNimi() + "; " + getKuupäev() + "; " + getAeg() + "; " + getDetailid() +"; "+meeldetuletuseAeg+"\n";
     }
 
     //@Override
-    public void meeldetuletus(String kuupäev, String aeg){
+    /*public void meeldetuletus(String kuupäev, String aeg){
         //
-    }
+    }*/
 
     //new java.sql.Timestamp(System.currentTimeMillis())
     //while (true) {

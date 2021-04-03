@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class Event implements Comparable<Event>{
     //kuupäev ja aeg eraldi
@@ -40,14 +41,14 @@ public class Event implements Comparable<Event>{
         this.aeg = aeg;
     }
 
-    public List<String> getDetailid() {
+    public ArrayList<String> getDetailid() {
         return detailid;
     }
     //Setter detailidele ei sobi vist
 
     @Override
     public String toString() { //Seda võiks sobivamaks muuta
-        return "" + nimi + ", kuupäev: " + kuupäev + ", aeg: " + aeg + ", detailid: " + detailid+"\n";
+        return "" + nimi + "; " + kuupäev + "; " + aeg + "; " + detailid+"\n";
     }
     public void lisaDetail(String detail){
         detailid.add(detail);
@@ -61,17 +62,21 @@ public class Event implements Comparable<Event>{
 
     @Override
     public int compareTo(Event o) { //Kuskil peaks vaja minema
-        //Kuupäev kujul DD-MM-YYYY
-        //Kellaaeg kujul tunnid:minutid:sekundid.millisekundid
+        //Kuupäev kujul DD.MM.YYYY
+        //Kellaaeg kujul tunnid:minutid
         //convertime kõik millisekunditesse ja võrdleme
         //iga kord pole vaja millisekundites võrrelda, programmi tööaja optimiseerimiseks võrdleme alguses aastaid, kui on samad siis võrdleme kuid jne jne
 
         String esimesekuupäev = this.getKuupäev();
         String esimesekellaaeg = this.getAeg();
-        String[] esimesejupid = esimesekuupäev.split("-");
+        //String[] esimesejupidAlgne = esimesekuupäev.split(": ");
+        //String[] esimesejupid = esimesejupidAlgne[1].split(Pattern.quote("."));
+        String[] esimesejupid = esimesekuupäev.split(Pattern.quote("."));
         String teisekuupäev = o.getKuupäev();
         String teisekellaaeg = o.getAeg();
-        String[] teisejupid = teisekuupäev.split("-");
+        //String[] teisejupidAlgne = teisekuupäev.split(": ");
+        //String[] teisejupid = teisejupidAlgne[1].split(Pattern.quote("."));
+        String[] teisejupid = teisekuupäev.split(Pattern.quote("."));
         int esimeseaasta = Integer.parseInt(esimesejupid[2]);
         int teiseaasta = Integer.parseInt(teisejupid[2]);
         if(esimeseaasta>teiseaasta){
@@ -99,7 +104,11 @@ public class Event implements Comparable<Event>{
                     return -1;
                 }
                 else{ //Päevad on võrdsed, võrdleme tunde.
+                    //String[] esimeseajajupidAlgne = esimesekellaaeg.split(": ");
+                    //String[] esimeseajajupid = esimeseajajupidAlgne[1].split(":");
                     String[] esimeseajajupid = esimesekellaaeg.split(":");
+                    //String[] teiseajajupidAlgne = teisekellaaeg.split(": ");
+                    //String[] teiseajajupid = teiseajajupidAlgne[1].split(":");
                     String[] teiseajajupid = teisekellaaeg.split(":");
                     int esimesetund = Integer.parseInt(esimeseajajupid[0]);
                     int teisetund = Integer.parseInt(teiseajajupid[0]);
@@ -118,30 +127,8 @@ public class Event implements Comparable<Event>{
                         else if(teiseminut>esimeseminut){
                             return -1;
                         }
-                        else{ //Minutid on võrdsed, võrdleme sekundeid.
-                            String[] esimesesekundjamillisekund = esimeseajajupid[2].split(".");
-                            int esimesesekund = Integer.parseInt(esimesesekundjamillisekund[0]);
-                            String[] teisesekundjamillisekund = teiseajajupid[2].split(".");
-                            int teisesekund = Integer.parseInt(teisesekundjamillisekund[0]);
-                            if(esimesesekund>teisesekund){
-                                return 1;
-                            }
-                            else if(teisesekund>esimesesekund){
-                                return -1;
-                            }
-                            else{ //Sekundid on võrdsed, võrdleme millisekundeid.
-                                int esimesemillisekund = Integer.parseInt(esimesesekundjamillisekund[1]);
-                                int teisemillisekund = Integer.parseInt(teisesekundjamillisekund[1]);
-                                if(esimesemillisekund>teisemillisekund){
-                                    return 1;
-                                }
-                                else if(teisemillisekund<esimesemillisekund){
-                                    return -1;
-                                }
-                                else{ //Ajad on täiesti võrdsed.
-                                    return 0;
-                                }
-                            }
+                        else{
+                            return 0;
                         }
                     }
                 }

@@ -45,12 +45,20 @@ public class Kalender {
                 Scanner sc=new Scanner(evendidInput);    //file to be scanned
                 while(sc.hasNextLine()){
                     String rida = sc.nextLine();
-                    String[] tükid = rida.split(", ");
+                    String[] tükid = rida.split("; ");
                     String asenda1 = tükid[3].replace("[","");
                     String asenda2 = asenda1.replace("]","");
                     ArrayList<String> detailidFailist = new ArrayList<String>(Arrays.asList(asenda2.split(",")));
-                    Event failistLoetudEvent = new Event(tükid[0], tükid[1], tükid[2], detailidFailist);
-                    evendid.add(failistLoetudEvent);
+                    if(tükid.length==4) {
+                        Event failistLoetudEvent = new Event(tükid[0], tükid[1], tükid[2], detailidFailist);
+                        evendid.add(failistLoetudEvent);
+                    }
+                    else{ //meeldetuletus on ka
+                        SimpleDateFormat failistFormaat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US);
+                        Date meeldetuletusFailist = failistFormaat.parse(tükid[4]);
+                        Meeldetuletus failistLoetudEvent = new Meeldetuletus(tükid[0], tükid[1], tükid[2], detailidFailist, meeldetuletusFailist);
+                        evendid.add(failistLoetudEvent);
+                    }
                 }
             }
         } catch (IOException e) {
@@ -134,6 +142,8 @@ public class Kalender {
         System.out.println("Sündmuse lisamise alustamiseks sisestage \"lisa\"");
         System.out.println("Sündmuste salvestamiseks sisestage \"salvesta\"");
         System.out.println("Sündmuste väljastamiseks sisestage \"väljasta\"");
+        System.out.println("Sündmuse muutmise alustamiseks sisestage \"muuda\"");
+        System.out.println("Sündmuse kustutamiseks sisestage \"kustuta\"");
 
         //Veel edasi juhised kõige muu jaoks: väljasta evendid, kindla evendi info jne jne
 
@@ -189,9 +199,9 @@ public class Kalender {
                 System.out.println();
                 System.out.println("Sisesta ürituse nimi: ");
                 String nimi = scanner.nextLine();
-                System.out.println("Sisesta kuupäev: ");
+                System.out.println("Sisesta kuupäev kujul päev.kuu.aasta : ");
                 String päev = scanner.nextLine();
-                System.out.println("Sisesta aeg: ");
+                System.out.println("Sisesta aeg kujul tunnid:minutid : ");
                 String aeg = scanner.nextLine();
                 System.out.println("Kas soovite lisada detaile (jah/ei)?: ");
                 String vastus = scanner.nextLine();
@@ -212,8 +222,8 @@ public class Kalender {
                             break;
                         }
                         else{ //Siin on midagi valesti, ta lisab 2x detaili ühele evendile. Vist korras
-                            uus.lisaDetail(detailvastus);
-                            uus2.lisaDetail(detailvastus);
+                            //uus.lisaDetail(detailvastus);
+                            uus2.lisaDetail(detailvastus); //muidu lisab topelt
                         }
                     }
                 }
@@ -236,7 +246,127 @@ public class Kalender {
                 state = ""; //Esialgsesse state tagasi
             }
             else if (state.equals("väljasta")) {
+                Collections.sort(evendid);
                 System.out.println(evendid);
+                state = "";
+            }
+            else if (state.equals("kustuta")){
+                System.out.println("Millist sündmust soovite kustutada(sisestage nimi või indeks): ");
+                String kustutaVastus = scanner.nextLine();
+                try{
+                    evendid.remove(Integer.parseInt(kustutaVastus)); //indeksi järgi
+                }
+                catch(Exception d){
+                    for (Event event : evendid) { //nime järgi
+                        if(event.getNimi().equals(kustutaVastus)){
+                            evendid.remove(event);
+                            break;
+                        }
+                    }
+                }
+            }
+            else if(state.equals("muuda")){
+                System.out.println("Sisestage sündmuse nimi, mida soovite muuta: ");
+                String muudetavaNimi = scanner.nextLine();
+                boolean lõpetamiseTingimus = false;
+                while(lõpetamiseTingimus==false) {
+                    System.out.println("Sündmuse muutmise lõpetamiseks sisestage: \"lõpeta\"");
+                    System.out.println("Mida soovite sündmuse juures muuta (sisestage \"nimi\", \"kuupäev\", \"aeg\", \"detail\" või \"meeldetuletus\")");
+                    String muutmisevastus = scanner.nextLine();
+                    if (muutmisevastus.equals("lõpeta")) {
+                        lõpetamiseTingimus=true;
+                        break;
+                    }
+                    else if (muutmisevastus.equals("nimi")){
+                        System.out.println("Sisestage uus nimi: ");
+                        String uusnimi = scanner.nextLine();
+                        for (Event event : evendid) {
+                            if(event.getNimi().equals(muudetavaNimi)){
+                                event.setNimi(uusnimi);
+                            }
+                        }
+                    }
+                    else if (muutmisevastus.equals("kuupäev")){
+                        System.out.println("Sisestage uus kuupäev: ");
+                        String uuskuupäev = scanner.nextLine();
+                        for (Event event : evendid) {
+                            if(event.getNimi().equals(muudetavaNimi)){
+                                event.setKuupäev(uuskuupäev);
+                            }
+                        }
+                    }
+                    else if (muutmisevastus.equals("aeg")){
+                        System.out.println("Sisestage uus aeg: ");
+                        String uusaeg = scanner.nextLine();
+                        for (Event event : evendid) {
+                            if(event.getNimi().equals(muudetavaNimi)){
+                                event.setAeg(uusaeg);
+                            }
+                        }
+                    }
+                    else if (muutmisevastus.equals("detail")){
+                        System.out.println("Kas soovite detaili lisada või kustutada (\"lisa\"/\"kustuta\"): ");
+                        String detailimuutmisevastus = scanner.nextLine();
+                        if (detailimuutmisevastus.equals("lisa")){
+                            System.out.println("Sisestage lisatav detail: ");
+                            String uusdetail = scanner.nextLine();
+                            for (Event event : evendid) {
+                                if(event.getNimi().equals(muudetavaNimi)){
+                                    event.lisaDetail(uusdetail);
+                                }
+                            }
+                        }
+                        else if (detailimuutmisevastus.equals("kustuta")){
+                            System.out.println("Sisestage kustutatav detail kas nime või indeksi järgi: ");
+                            String kustutatavdetail = scanner.nextLine();
+                            try{
+                                int kustutatavaindeks = Integer.parseInt(kustutatavdetail);
+                                for (Event event : evendid) {
+                                    if(event.getNimi().equals(muudetavaNimi)){
+                                        event.kustutaDetail(kustutatavaindeks);
+                                    }
+                                }
+                            }
+                            catch(Exception e){
+                                for (Event event : evendid) {
+                                    if(event.getNimi().equals(muudetavaNimi)){
+                                        event.kustutaDetail(kustutatavdetail);
+                                    }
+                                }
+                            }
+                        }
+                        else{
+                            System.out.println("Vigane sisestus.");
+                        }
+                    }
+                    else if (muutmisevastus.equals("meeldetuletus")){
+                        //Loo uus Meeldetuletus, kustuta vana event ja pane asemele Meeldetuletus
+                        System.out.println("Sisestage meeldetuletuse aeg kujul aasta-kuu-päev at tund:minut:sekund");
+                        String Mvastus = scanner.nextLine();
+                        SimpleDateFormat formaat = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss");
+                        Date Mmeeldetuletus = formaat.parse(Mvastus);
+                        String Mnimi = "";
+                        String Mkuupäev = "";
+                        String Maeg = "";
+                        ArrayList<String> Mdetailid = new ArrayList<>();
+
+                        for (Event event : evendid) {
+                            if(event.getNimi().equals(muudetavaNimi)){
+                                Mnimi = event.getNimi();
+                                Mkuupäev = event.getKuupäev();
+                                Maeg = event.getAeg();
+                                Mdetailid = event.getDetailid();
+                                evendid.remove(event); //eemaldame evendi
+                                break;
+                            }
+                        }
+                        Meeldetuletus uusM = new Meeldetuletus(Mnimi, Mkuupäev, Maeg, Mdetailid, Mmeeldetuletus);
+                        evendid.add(uusM); //lisame asemele Meeldetuletuse
+                    }
+                    else{
+                        System.out.println("Vigane sisestus.");
+                    }
+                }
                 state = "";
             }
             else{
