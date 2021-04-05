@@ -2,29 +2,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalTime;
 import java.util.*;
 
 
 public class Kalender {
-    /*boolean isNowBetweenDateTime(final Date s, final Date e)
-    {
-        final Date now = new Date();
-        return now.after(s) && now.before(e);
-    }
 
-    public static void meeldetuletusjooksvalt() throws Exception{
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-        Date tuletameelde = formatter.parse("2021-03-28 at 15:08:00");
-        while(true){
-            Date praeguneAeg = new Date(System.currentTimeMillis());
-            if (formatter.format(praeguneAeg).equals(tuletameelde))
-                System.out.println("MEELDETULETUS!");
-        }
-    }*/
+    public static String suvalineAeg(){
+        int tund = (int)(Math.random()*25);
+        int minut = (int)(Math.random()*61);
+        String tagastatav = tund+":"+minut;
+        return tagastatav;
+    }
     public static void main(String[] args) throws Exception{
         
 
@@ -48,7 +37,7 @@ public class Kalender {
                     String[] tükid = rida.split("; ");
                     String asenda1 = tükid[3].replace("[","");
                     String asenda2 = asenda1.replace("]","");
-                    ArrayList<String> detailidFailist = new ArrayList<String>(Arrays.asList(asenda2.split(",")));
+                    ArrayList<String> detailidFailist = new ArrayList<String>(Arrays.asList(asenda2.split(", ")));
                     if(tükid.length==4) {
                         Event failistLoetudEvent = new Event(tükid[0], tükid[1], tükid[2], detailidFailist);
                         evendid.add(failistLoetudEvent);
@@ -68,70 +57,6 @@ public class Kalender {
 
 
 
-        //Thread t1 = new Thread(){
-            //public void run(){
-                //try {
-                /*for (Event event : evendid) {
-                   if(event instanceof Meeldetuletus){ //Kui event on Meeldetuletus objekt, siis tal on meeldetuletuse aeg
-                       Timer timer = new Timer();
-                       Date aeg = ((Meeldetuletus) event).getMeeldetuletuseAeg();
-                       timer.schedule(new TimerTask() {
-                           public void run() {
-                               System.out.println("MEELDETULETUS!");
-                               cancel();
-                           }
-                       },new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss").parse("2021-03-28 at 16:13:00"));
-                   }
-                }*/
-                    //SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss");
-                    //Date tuletameelde = formatter.parse("2021-03-28 at 16:00:00");
-                    //Timer timer = new Timer();
-                    //while (true) {
-                        /*//Date praeguneAeg = new Date(System.currentTimeMillis());
-                        Calendar praeguneAeg = Calendar.getInstance();
-                        praeguneAeg.set(Calendar.MILLISECOND, 0);
-                        //if (formatter.format(praeguneAeg).equals(tuletameelde.toString())) {
-                        if(praeguneAeg.equals(tuletameelde)){
-                            System.out.println("MEELDETULETUS!");
-                        }*/
-                    /*timer.schedule(new TimerTask() {
-                        public void run() {
-                            System.out.println("MEELDETULETUS!");
-                            cancel();
-                        }
-                    },new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss").parse("2021-03-28 at 16:13:00"));*/
-                    //}
-                //}
-                //catch(ParseException e){
-                    //System.out.println("Error");
-                //}
-            //}
-        //};
-        //t1.start();
-        
-        
-        
-        
-        //Väljastab evendid järjestatult compareTo
-        //List<Event>
-        //for each event kalendrist
-        //Küsib sisestust, mida teha
-        //Lisa event new Event
-        //Täpsem info evendi kohta event.toString
-        //Kindla päeva evendid
-        //Sobivad ajad?
-        //Randomiga valib programm aja sobivate aegade seast
-        //Otsi nime järgi
-        //Kustuta event
-        //getterid ja setterid iga asja kohta, lisa detaile jne
-
-
-        //Meeldetuletusega evendi puhul: Event objekti asemel loo Meeldetuletus objekt
-        //Selle saab ka lisada List<Event> hulka.
-        //Kuidagimoodi saaks kasutada Eventi compareTo meetodit või luua sarnane meetod
-        //mis võrdleks Meeldetuletus objekti isendivälja LocalTime meeldetuletuseAeg väärtust
-        //konstantselt java.time.LocalTime.now() väärtusega. Kui väärtused on võrdsed, siis väljastab
-        //meeldetuletuse sõnumi.
 
 
         System.out.println("KALENDER");
@@ -145,7 +70,6 @@ public class Kalender {
         System.out.println("Sündmuse muutmise alustamiseks sisestage \"muuda\"");
         System.out.println("Sündmuse kustutamiseks sisestage \"kustuta\"");
 
-        //Veel edasi juhised kõige muu jaoks: väljasta evendid, kindla evendi info jne jne
 
 
 
@@ -193,24 +117,26 @@ public class Kalender {
                 }
                 state="";
             }
-            else if (state.equals("lisa")) { //Saab lisada evendi hetkel ainult ühe detailiga
-                //Tegin detaili sisestamise optionaliks ning võimalik mitu sisestada.
-                //Mis kujul peab kasutaja vastuseid andma?
+            else if (state.equals("lisa")) {
+
                 System.out.println();
                 System.out.println("Sisesta ürituse nimi: ");
                 String nimi = scanner.nextLine();
                 System.out.println("Sisesta kuupäev kujul päev.kuu.aasta : ");
                 String päev = scanner.nextLine();
-                System.out.println("Sisesta aeg kujul tunnid:minutid : ");
-                String aeg = scanner.nextLine();
+                System.out.println("Sisesta aeg kujul tunnid:minutid, kui soovite lasta programmil aja valida, sisestage \"suvaline\": ");
+                String aegvastus = scanner.nextLine();
+                String aeg = aegvastus;
+                if(aegvastus.equals("suvaline")){
+                    aeg = suvalineAeg();
+                    System.out.println("Arvuti valis ajaks: "+aeg);
+                }
                 System.out.println("Kas soovite lisada detaile (jah/ei)?: ");
                 String vastus = scanner.nextLine();
                 ArrayList<String> detailidelist = new ArrayList<String>();
                 Event uus = new Event(nimi, päev, aeg, detailidelist);
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss");
-                //DateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
                 Date meeldetuletuseAeg = format.parse("0000-01-01 at 00:00:00");
-                //Date meeldetuletuseKuupäev = format2.parse("2000-01-01");
                 Meeldetuletus uus2 = new Meeldetuletus(nimi, päev, aeg, detailidelist, meeldetuletuseAeg);
                 if(vastus.equals("jah")){
                     boolean tingimus = true;
@@ -221,13 +147,12 @@ public class Kalender {
                             tingimus = false;
                             break;
                         }
-                        else{ //Siin on midagi valesti, ta lisab 2x detaili ühele evendile. Vist korras
-                            //uus.lisaDetail(detailvastus);
-                            uus2.lisaDetail(detailvastus); //muidu lisab topelt
+                        else{
+                            uus2.lisaDetail(detailvastus); //uus2-le lisamine lisab ka uus-le
                         }
                     }
                 }
-                System.out.println("Kas soovite lisada meeldetuletuse (jah/ei) ?: "); //Seda võiks võimalusel nii muuta, et saab panna mitu meeldetuletust
+                System.out.println("Kas soovite lisada meeldetuletuse (jah/ei) ?: ");
                 String meeldetuletusjahei = scanner.nextLine();
                 if(meeldetuletusjahei.equals("ei")) {
                     evendid.add(uus);
