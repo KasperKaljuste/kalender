@@ -27,7 +27,7 @@ Esialgu tegime githubi repositooriumi ja rääkisime omavahel üldiselt, kes mid
 
 Kasper Kaljuste - Kalendri state machine loogika, failist lugemine ja faili kirjutamine, kella vorming ja väljastus
 
-Karl-Magnus - Sündmuste tegemine, muutmine ja võrdlemine omavahel, palju bug fixe, meeldetuletused ja erinevad väiksemad edasiarendused
+Karl-Magnus Laikoja - Sündmuste tegemine, muutmine ja võrdlemine omavahel, palju bug fixe, meeldetuletused ja erinevad väiksemad edasiarendused
 
 Ajakulusid eriti ei jälginud, vaid vabadel hetkedel tegime. Kui midagi silma jäi või mingi idee tuli, siis kirjutasime üksteisele.
 
