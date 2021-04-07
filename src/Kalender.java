@@ -8,7 +8,7 @@ import java.util.*;
 
 public class Kalender {
 
-    public static String suvalineAeg(){
+    public static String suvalineAeg(){ //Tagastab suvalise kellaaja.
         int tund = (int)(Math.random()*25);
         int minut = (int)(Math.random()*61);
         String tagastatav = tund+":"+minut;
@@ -24,7 +24,7 @@ public class Kalender {
         Scanner scanner = new Scanner(System.in);
         List<Event> evendid = new ArrayList<>();
 
-        try {
+        try { //Tekitab eventide tekstifaili või loeb evendid listi.
             File evendidFail = new File("evendid.txt");
             if (evendidFail.createNewFile()) {
                 System.out.println("File tehtud: " + evendidFail.getName());
@@ -42,7 +42,7 @@ public class Kalender {
                         Event failistLoetudEvent = new Event(tükid[0], tükid[1], tükid[2], detailidFailist);
                         evendid.add(failistLoetudEvent);
                     }
-                    else{ //meeldetuletus on ka
+                    else{ //meeldetuletus on ka lisaks muule
                         SimpleDateFormat failistFormaat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US);
                         Date meeldetuletusFailist = failistFormaat.parse(tükid[4]);
                         Meeldetuletus failistLoetudEvent = new Meeldetuletus(tükid[0], tükid[1], tükid[2], detailidFailist, meeldetuletusFailist);
@@ -54,8 +54,6 @@ public class Kalender {
             System.out.println("Error faili tegemisel");
             e.printStackTrace();
         }
-
-
 
 
 
@@ -72,9 +70,11 @@ public class Kalender {
 
 
 
-        //boolean meeldetuletusVäljastatud = false;
         while (true) {
-            //if(meeldetuletusVäljastatud==false) {
+
+            //Loome 2 Event objekti:
+            //Event, mille kuupäev ja kellaaeg on praegune kuupäev ja kellaaeg
+            //ning Event, mille kuupäev ja kellaaeg on meeldetuletusest saadud.
             Kuupäev täna = new Kuupäev();
             Kell praegu = new Kell();
             String tänanekuupäev = täna.getTäna();
@@ -107,12 +107,13 @@ public class Kalender {
             if(tänanekuupäevjupid[2].equals("detsember"))
                 praeguneKuu = "12";
             String praeguneKuupäev = praegunePäev+"."+praeguneKuu+"."+praeguneAasta;
-            Event praeguneHetk = new Event("", praeguneKuupäev, praegu.getKell(), new ArrayList<>());
+            Event praeguneHetk = new Event("", praeguneKuupäev, praegu.getKell(), new ArrayList<>()); //Praeguse hetke Event
             for (Event event : evendid) {
                 if (event instanceof Meeldetuletus) { //Kui event on Meeldetuletus objekt, siis tal on meeldetuletuse aeg
+                    //Muudame kujult Mon Apr 05 17:28:00 EEST 2021 kujule 05.04.2021 ja 17:28
+                    //Loome nende põhjal Eventi.
                     Date evendiMeeldetuletus = ((Meeldetuletus) event).getMeeldetuletuseAeg();
                     String evendiMeeldetuletusStringina = evendiMeeldetuletus.toString();
-                    //Mon Apr 05 17:28:00 EEST 2021
                     String[] evendiMeeldetuletusjupid = evendiMeeldetuletusStringina.split(" ");
                     String meeldetuletuseAeg = evendiMeeldetuletusjupid[3].substring(0, 5);
                     String aasta = evendiMeeldetuletusjupid[5];
@@ -144,8 +145,9 @@ public class Kalender {
                         kuu = "12";
 
                     String meeldetuletuseKuupäev = päev+"."+kuu+"."+aasta;
-                    Event evendiMeeldetuletusEvendina = new Event("", meeldetuletuseKuupäev, meeldetuletuseAeg, new ArrayList<>());
-                    if (evendiMeeldetuletusEvendina.compareTo(praeguneHetk) == 1) {
+                    Event evendiMeeldetuletusEvendina = new Event("", meeldetuletuseKuupäev, meeldetuletuseAeg, new ArrayList<>()); //Event, kus kuupäeva ja aja asemel on meeldetuletuse kuupäev ja aeg.
+                    //Neid kahte Eventi saab võrrelda.
+                    if (evendiMeeldetuletusEvendina.compareTo(praeguneHetk) == 1) { //Kui meeldetuletuse aeg pole veel möödas, loome timeri.
                         Timer timer = new Timer();
                         Date aeg = ((Meeldetuletus) event).getMeeldetuletuseAeg();
                         timer.schedule(new TimerTask() {
@@ -157,8 +159,7 @@ public class Kalender {
                     }
                 }
             }
-                //meeldetuletusVäljastatud = true;
-            //}
+
 
             if (state.equals("") || state.equals("kuupäev")) {
                 System.out.print("\r" + kuupäev.getTäna());
@@ -211,7 +212,7 @@ public class Kalender {
                 if(vastus.equals("jah")){
                     boolean tingimus = true;
                     System.out.println("Sisestage ükshaaval detaile. Kui rohkem pole vaja lisada, kirjutage \"lõpeta\"");
-                    while(tingimus==true){
+                    while(tingimus){
                         String detailvastus = scanner.nextLine();
                         if(detailvastus.equals("lõpeta")){
                             tingimus = false;
@@ -249,10 +250,10 @@ public class Kalender {
                 System.out.println("Millist sündmust soovite kustutada(sisestage nimi või indeks): ");
                 String kustutaVastus = scanner.nextLine();
                 try{
-                    evendid.remove(Integer.parseInt(kustutaVastus)); //indeksi järgi
+                    evendid.remove(Integer.parseInt(kustutaVastus)); //indeksi järgi kustutamine
                 }
-                catch(Exception d){
-                    for (Event event : evendid) { //nime järgi
+                catch(Exception d){  //Kui ei suuda sisestatud teksti arvuks muuta.
+                    for (Event event : evendid) { //nime järgi kustutamine
                         if(event.getNimi().equals(kustutaVastus)){
                             evendid.remove(event);
                             break;
