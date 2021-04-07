@@ -1,9 +1,8 @@
 
 import java.util.Date;
-
+//Veel ei läinud vaja seda klassi ega meetodit.
 public class Aeg extends Date {
     private Date aeg;
-
     public int võrdleKellaaegu(Aeg AegteineAeg) {
         String seeAeg = this.aeg.toString();
         String teineAeg = AegteineAeg.toString();
